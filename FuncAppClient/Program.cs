@@ -1,14 +1,22 @@
-﻿using System.Text;
+﻿using Microsoft.Extensions.Configuration;
+using System.Text;
 
 class Program
 {
     static async Task Main(string[] args)
     {
-        // URL of the Azure Function
-        string functionUrl = "https://myfunctionapp323.azurewebsites.net/api/UploadToBlobFunction";
+        IConfiguration configuration = new ConfigurationBuilder()
+          .SetBasePath(Directory.GetCurrentDirectory()) // Set the base path to the current directory
+          .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true) // Add appsettings.json
+          .Build();
+
+        // Example of reading a configuration value
+        string functionUrl = configuration["functionUrl"] ?? "samples";
+        Console.WriteLine($"function url: {functionUrl}");
+
 
         // Replace <your_function_key> with your actual function key if required
-        string functionKey = "Ud9AXPv5HU6FCFoEwMU9VOcmZXmwZ0YP_CSGsJBPoaXgAzFu1LcJBA==";
+        var functionKey = configuration["functionKey"] ?? "samples";
 
         // Sample data to upload
         string dataToUpload = "This is a sample text to upload to blob storage.";
